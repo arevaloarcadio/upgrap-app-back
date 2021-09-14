@@ -11,7 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadCategory = void 0;
 const uploadCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(`Storage location is ${req.hostname}/${req.file.path}`);
-    return res.send(req.file);
+    var _a;
+    console.log(`Storage location is ${req.hostname}/${(_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.path}`);
+    return res.send(req === null || req === void 0 ? void 0 : req.file);
 });
 exports.uploadCategory = uploadCategory;

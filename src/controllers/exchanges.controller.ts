@@ -66,7 +66,7 @@ export const updateExchange = async (req: Request, res: Response): Promise<Respo
         const io: Socket = req.app.locals.io;
         io.emit('notification',insert_notification.rows[0])
         
-        return res.status(200).json({message : `Exchange Updated` , message : messages.rows[0]});
+        return res.status(200).json({message : `Exchange Updated` , data : messages.rows[0]});
     } catch (error) {
         console.log(error)
         return res.status(500).json({message : 'Error Interno', error : error});

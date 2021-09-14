@@ -37,12 +37,13 @@ const updateCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.updateCustomer = updateCustomer;
 const updateCustomerMobile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const id = parseInt(req.params.id);
     const upload = req.file === undefined ? false : true;
     const { name, city, dir, pais, phone } = req.body;
     try {
         if (upload) {
-            const update = yield database_1.pool.query('UPDATE customer SET name = $1, city = $2,dir = $3,pais = $4,phone = $5, photo = $6 WHERE id = $7', [name, city, dir, pais, phone, req.file.filename, id]);
+            const update = yield database_1.pool.query('UPDATE customer SET name = $1, city = $2,dir = $3,pais = $4,phone = $5, photo = $6 WHERE id = $7', [name, city, dir, pais, phone, (_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.filename, id]);
         }
         else {
             const update = yield database_1.pool.query('UPDATE customer SET name = $1, city = $2,dir = $3,pais = $4,phone = $5 WHERE id = $6', [name, city, dir, pais, phone, id]);

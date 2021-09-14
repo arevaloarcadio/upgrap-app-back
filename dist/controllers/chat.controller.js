@@ -86,11 +86,12 @@ const getChatMessages = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.getChatMessages = getChatMessages;
 const createMessageChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { is_file } = req.body;
     try {
         if (is_file) {
             const { id_sender, id_receiver } = req.body;
-            const file = req.file.filename;
+            const file = (_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.filename;
             const response = yield database_1.pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file) VALUES ($1, $2, $3,now(),false,$4)', [id_sender, id_receiver, file, is_file]);
             return res.json({ message: 'Mensaje enviado' });
         }

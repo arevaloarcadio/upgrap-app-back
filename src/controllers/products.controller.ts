@@ -172,22 +172,21 @@ export const createProducts = async (req: Request, res: Response): Promise<Respo
     
     const {address,category_id,to_change,city,descripcion,estado,user_id,nombre,country}=req.body;
     try {
-
           jimp.read(req.file.path).then(info => {
             info.resize(512, jimp.AUTO,jimp.RESIZE_BEZIER)
-            .write('./uploads/'+req.file.filename)
+            .write('./uploads/'+req?.file?.filename)
             
         })
         .catch(err => {
-            res.status(500).json({message : 'Error Interno', error : error})
+            res.status(500).json({message : 'Error Interno', error : err})
             
         })
-        const response: QueryResult = await pool.query('INSERT INTO products (address, category, change, city, description, estado, fecha, id_user, name, pais,photo) VALUES($1, $2, $3, $4,$5, $6, now(), $7,$8,$9,$10)', [address,category_id,to_change,city,descripcion,estado,user_id,nombre,country,req.file.filename]);
+        const response: QueryResult = await pool.query('INSERT INTO products (address, category, change, city, description, estado, fecha, id_user, name, pais,photo) VALUES($1, $2, $3, $4,$5, $6, now(), $7,$8,$9,$10)', [address,category_id,to_change,city,descripcion,estado,user_id,nombre,country,req?.file?.filename]);
         return res.status(200).json({
             message: 'User created Successfully',
             body: {
                 product: {
-                   address,category_id,to_change,city,descripcion,estado,user_id,nombre,country, file : req.file.filename
+                   address,category_id,to_change,city,descripcion,estado,user_id,nombre,country, file : req?.file?.filename
                 }
             }
         })

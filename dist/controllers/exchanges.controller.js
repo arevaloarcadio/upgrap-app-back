@@ -72,7 +72,7 @@ const updateExchange = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const insert_notification = yield database_1.pool.query('INSERT INTO notifications(id,notifiable_id, data, type, request_id,photo,created_at) VALUES ($1, $2, $3, $4,$5,$6, now()) returning  id,notifiable_id, data, type, request_id,photo,created_at', [uuid_random_1.default(), request.id_user, 'Tu intercambio ha sido ' + status.toLowerCase(), status.toLowerCase() == 'aceptada' ? 'request.accepted' : 'request.rejected', request_id, photo]);
         const io = req.app.locals.io;
         io.emit('notification', insert_notification.rows[0]);
-        return res.status(200).json({ message: `Exchange Updated`, message: messages.rows[0] });
+        return res.status(200).json({ message: `Exchange Updated`, data: messages.rows[0] });
     }
     catch (error) {
         console.log(error);

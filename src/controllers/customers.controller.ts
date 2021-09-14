@@ -32,7 +32,7 @@ export const updateCustomerMobile = async (req: Request, res: Response): Promise
     const {name, city, dir,pais,phone} = req.body;
     try {
         if (upload){
-            const update: QueryResult = await pool.query('UPDATE customer SET name = $1, city = $2,dir = $3,pais = $4,phone = $5, photo = $6 WHERE id = $7', [name, city, dir,pais,phone,req.file.filename,id]);
+            const update: QueryResult = await pool.query('UPDATE customer SET name = $1, city = $2,dir = $3,pais = $4,phone = $5, photo = $6 WHERE id = $7', [name, city, dir,pais,phone,req?.file?.filename,id]);
         }else{
             const update: QueryResult = await pool.query('UPDATE customer SET name = $1, city = $2,dir = $3,pais = $4,phone = $5 WHERE id = $6', [name, city, dir,pais,phone,id]);
         }
