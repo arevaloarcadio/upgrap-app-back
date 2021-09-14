@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const categories_controller_1 = require("../controllers/categories.controller");
+const middlewares_1 = require("../middlewares");
+const router = express_1.Router();
+router.get('/categories/customer/:user_id', categories_controller_1.getCustomerCategories);
+router.get('/categories', middlewares_1.verifyToken, categories_controller_1.getCategories);
+router.post('/categories', categories_controller_1.createCategories);
+router.post('/categories/customer', categories_controller_1.createCustomerCategories);
+router.get('/categories/:id', categories_controller_1.getCategoriesById);
+router.put('/categories/:id', categories_controller_1.updateCategories);
+router.put('/categories/customer/:customer_id', categories_controller_1.updateCustomerCategories);
+router.delete('/categories/:id', categories_controller_1.deleteCategories);
+router.delete('/categories/customer/:id/:user_id', categories_controller_1.deleteCustomerCategories);
+exports.default = router;

@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_controller_1 = require("../controllers/auth.controller");
+const router = express_1.Router();
+router.post('/signup/mobile/:singin_method', auth_controller_1.signUpAuthSocial);
+router.post('/signin/mobile/:singin_method', auth_controller_1.signInAuthSocial);
+router.post('/signup', auth_controller_1.signUp);
+router.post('/signin', auth_controller_1.signIn);
+router.post('/signup/mobile', auth_controller_1.signUpMobile);
+router.post('/signin/mobile', auth_controller_1.signInMobile);
+router.post('/signup/phone', auth_controller_1.signUpPhone);
+router.post('/signup/verify', auth_controller_1.verifyCode);
+exports.default = router;
