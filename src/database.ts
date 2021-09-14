@@ -2,8 +2,8 @@ import { Pool } from 'pg';
 
 export const pool = new Pool({
     user: 'doadmin',
-    host: 'db-postgresql-nyc3-70537-do-user-9839254-0.b.db.ondigitalocean.com',
-    password: 'F7XOI8sLmOyH-PVT',
+    host: 'db-postgresql-fra1-56864-do-user-9839254-0.b.db.ondigitalocean.com',
+    password: 'BdmwHF4RViwISXjW',
     database: 'defaultdb',
     port: 25060,
     ssl : true
