@@ -172,7 +172,8 @@ export const createProducts = async (req: Request, res: Response): Promise<Respo
     
     const {address,category_id,to_change,city,descripcion,estado,user_id,nombre,country}=req.body;
     try {
-          jimp.read(req.file.path).then(info => {
+           
+          jimp.read('./uploads/'+req?.file?.filename).then(info => {
             info.resize(512, jimp.AUTO,jimp.RESIZE_BEZIER)
             .write('./uploads/'+req?.file?.filename)
             
