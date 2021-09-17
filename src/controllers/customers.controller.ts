@@ -6,7 +6,7 @@ import {pool} from '../database';
 export const getCustomerById = async (req: Request, res: Response): Promise<Response> => {
     const id = parseInt(req.params.id);
     try {
-        const response: QueryResult = await pool.query('SELECT name, email, city, dir, pais, phone, validate_phone, migrate_key, prefix, userid, singin_method, rol,photo, id FROM customer WHERE id = $1', [id]);
+        const response: QueryResult = await pool.query('SELECT * FROM customer WHERE id = $1', [id]);
         return res.json(response.rows[0]);
     } catch (error) {
         console.log(error)
