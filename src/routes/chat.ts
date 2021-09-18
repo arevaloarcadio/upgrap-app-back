@@ -1,11 +1,12 @@
 import {Router} from 'express';
 import { createConfigChat,getConfigChat,createTermsChatAccepted,getChatStatus,getChats,createMessageChat,updateChatReadAt,getTermsChatAcceptedByUser,getChatMessages ,updateConfigChat,createChatList} from '../controllers/chat.controller';
 import multer from 'multer';
+import path  from 'path';
 const router = Router();
 
 let storage = multer.diskStorage({
     destination:(req  :any, file :any, cb :any)=>{
-        cb(null, '../../images/public')
+        cb(null, path.join(__dirname, '../../images/public'))
     },
     filename:(req :any, file :any, cb :any) => {
 	   cb(null, 'file-'+Date.now()+'.'+file.originalname);
