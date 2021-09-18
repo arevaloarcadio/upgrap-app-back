@@ -9,7 +9,7 @@ const router = Router();
 
 let storage = multer.diskStorage({
     destination:(req  :any, file  :any, cb :any)=>{
-        cb(null, './public/products')
+        cb(null, '../public/products')
     },
     filename:(req  :any, file  :any, cb :any) => {
 	   cb(null, 'file-'+Date.now()+'.'+file.originalname);
