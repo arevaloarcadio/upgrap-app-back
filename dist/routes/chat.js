@@ -9,7 +9,7 @@ const multer_1 = __importDefault(require("multer"));
 const router = express_1.Router();
 let storage = multer_1.default.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './uploads');
+        cb(null, './public/products');
     },
     filename: (req, file, cb) => {
         cb(null, 'file-' + Date.now() + '.' + file.originalname);
