@@ -27,7 +27,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(cors());
 
 
-app.use('/public',express.static(path.join(__dirname, '../../public')));
+app.use('/public',express.static(path.join(__dirname, '../../images/public')));
 
 // routers
 app.use(indexRouter);
