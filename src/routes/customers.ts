@@ -1,6 +1,7 @@
 import {Router} from 'express';
 import {updateCustomer, getCustomerById ,updateCustomerMobile} from '../controllers/customers.controller';
 import multer from 'multer';
+import path  from 'path';
 const router = Router();
 
 let storage = multer.diskStorage({
