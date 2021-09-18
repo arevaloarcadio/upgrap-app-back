@@ -6,7 +6,7 @@ const router = Router();
 
 let storage = multer.diskStorage({
     destination:(req  :any, file :any, cb :any)=>{
-        cb(null, path.join(__dirname, '../../images/public'))
+        cb(null, path.join(__dirname, '../../../images/public'))
     },
     filename:(req :any, file :any, cb :any) => {
 	   cb(null, 'file-'+Date.now()+'.'+file.originalname);
