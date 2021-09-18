@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProductsSaved = exports.deleteProducts = exports.updateProducts = exports.createProductsSavePosts = exports.getProductsSavedById = exports.getProductsSaved = exports.createProducts = exports.getProductsById = exports.getProductsByCategory = exports.getCountProducts = exports.getProductsByUser = exports.getProductsFilter = exports.getProductsInvite = exports.getProducts = void 0;
 const database_1 = require("../database");
 const pg_format_1 = __importDefault(require("pg-format"));
-const jimp_1 = __importDefault(require("jimp"));
 // get
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -69,7 +68,6 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getProducts = getProducts;
 const getProductsInvite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("2");
         const limit = req.params.limit;
         const offset = req.params.offset;
         let { filter } = req.body;
@@ -102,7 +100,6 @@ exports.getProductsInvite = getProductsInvite;
 const getProductsFilter = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { filter } = req.body;
-        console.log(filter);
         const products = yield database_1.pool.query("SELECT products.*, categories.name as category_name FROM products INNER JOIN categories ON categories.id = products.category WHERE (products.name like $1 OR categories.name like $1)", ['%' + filter + '%']);
         let response = [];
         for (var i = 0; i < products.rows.length; i++) {
@@ -172,23 +169,23 @@ const getProductsById = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.getProductsById = getProductsById;
 // post 
 const createProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+    var _a, _b;
     const { address, category_id, to_change, city, descripcion, estado, user_id, nombre, country } = req.body;
     try {
-        jimp_1.default.read('./uploads/' + ((_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.filename)).then(info => {
-            var _a;
-            info.resize(512, jimp_1.default.AUTO, jimp_1.default.RESIZE_BEZIER)
-                .write('./uploads/' + ((_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.filename));
+        /*  jimp.read('./uploads/'+req?.file?.filename).then(info => {
+            info.resize(512, jimp.AUTO,jimp.RESIZE_BEZIER)
+            .write('./uploads/'+req?.file?.filename)
+            
         })
-            .catch(err => {
-            res.status(500).json({ message: 'Error Interno', error: err });
-        });
-        const response = yield database_1.pool.query('INSERT INTO products (address, category, change, city, description, estado, fecha, id_user, name, pais,photo) VALUES($1, $2, $3, $4,$5, $6, now(), $7,$8,$9,$10)', [address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, (_b = req === null || req === void 0 ? void 0 : req.file) === null || _b === void 0 ? void 0 : _b.filename]);
+        .catch(err => {
+            res.status(500).json({message : 'Error Interno', error : err})
+        })*/
+        const response = yield database_1.pool.query('INSERT INTO products (address, category, change, city, description, estado, fecha, id_user, name, pais,photo) VALUES($1, $2, $3, $4,$5, $6, now(), $7,$8,$9,$10)', [address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, (_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.filename]);
         return res.status(200).json({
             message: 'User created Successfully',
             body: {
                 product: {
-                    address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, file: (_c = req === null || req === void 0 ? void 0 : req.file) === null || _c === void 0 ? void 0 : _c.filename
+                    address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, file: (_b = req === null || req === void 0 ? void 0 : req.file) === null || _b === void 0 ? void 0 : _b.filename
                 }
             }
         });

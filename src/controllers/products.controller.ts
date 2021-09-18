@@ -64,7 +64,7 @@ export const getProducts = async (req: Request, res: Response): Promise<Response
 
 export const getProductsInvite = async (req: Request, res: Response): Promise<Response> => {
     try {
-        console.log("2")
+
         const limit = req.params.limit
         const offset = req.params.offset
         let { filter } = req.body
@@ -102,7 +102,7 @@ export const getProductsInvite = async (req: Request, res: Response): Promise<Re
 export const getProductsFilter = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { filter } = req.body
-        console.log(filter)
+        
         const products: QueryResult = await pool.query("SELECT products.*, categories.name as category_name FROM products INNER JOIN categories ON categories.id = products.category WHERE (products.name like $1 OR categories.name like $1)",['%'+filter+'%']);
         let response:any[]= []
         
@@ -173,15 +173,15 @@ export const createProducts = async (req: Request, res: Response): Promise<Respo
     const {address,category_id,to_change,city,descripcion,estado,user_id,nombre,country}=req.body;
     try {
            
-          jimp.read('./uploads/'+req?.file?.filename).then(info => {
+        /*  jimp.read('./uploads/'+req?.file?.filename).then(info => {
             info.resize(512, jimp.AUTO,jimp.RESIZE_BEZIER)
             .write('./uploads/'+req?.file?.filename)
             
         })
         .catch(err => {
             res.status(500).json({message : 'Error Interno', error : err})
-            
-        })
+        })*/
+
         const response: QueryResult = await pool.query('INSERT INTO products (address, category, change, city, description, estado, fecha, id_user, name, pais,photo) VALUES($1, $2, $3, $4,$5, $6, now(), $7,$8,$9,$10)', [address,category_id,to_change,city,descripcion,estado,user_id,nombre,country,req?.file?.filename]);
         return res.status(200).json({
             message: 'User created Successfully',

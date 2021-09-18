@@ -14,7 +14,7 @@ const database_1 = require("../database");
 const getCustomerById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = parseInt(req.params.id);
     try {
-        const response = yield database_1.pool.query('SELECT name, email, city, dir, pais, phone, validate_phone, migrate_key, prefix, userid, singin_method, rol,photo, id FROM customer WHERE id = $1', [id]);
+        const response = yield database_1.pool.query('SELECT * FROM customer WHERE id = $1', [id]);
         return res.json(response.rows[0]);
     }
     catch (error) {
