@@ -122,6 +122,9 @@ const signInMobile = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.signInMobile = signInMobile;
 const signUpPhone = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { phone } = req.body;
+    const validate_phone = yield database_1.pool.query('SELECT phone FROM customer WHERE phone = $1', [phone]);
+    if (validate_phone.rows.length != 0)
+        return res.status(422).json({ error: true, type: 'validation', data: 'Ya existe cuenta con este número de telefono' });
     const customer = yield database_1.pool.query('INSERT INTO customer (phone,singin_method,photo) VALUES ($1,$2,$3) returning id', [phone, 'phone', 'default.png']);
     const id_user = customer.rows[0].id;
     const code = GetRandomNum(1000, 9999);
@@ -133,7 +136,7 @@ const signUpPhone = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         to: phone
     })
         .catch((error) => {
-        return res.status(400).json({ error: error });
+        return res.status(422).json({ error: true, type: 'validation', data: 'Error al enviar el código' });
     });
     return res.status(200).json({ message: 'codigo enviado', id_user: id_user });
 });
@@ -143,7 +146,7 @@ const verifyCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const verify_code = yield database_1.pool.query('SELECT code, expire_at FROM verify_phone WHERE id_user = $1 ORDER BY create_at DESC LIMIT 1', [id_user]);
         if (verify_code.rows[0].code != code) {
-            return res.status(400).json({ verify: 'Código incorrecto' });
+            return res.status(422).json({ error: true, type: 'validation', data: 'Código de verificación incorrecto' });
         }
         const login = yield database_1.pool.query('SELECT * FROM customer WHERE id = $1 LIMIT 1', [id_user]);
         const token = jsonwebtoken_1.default.sign({ id: id_user }, config_1.default.SECRET);

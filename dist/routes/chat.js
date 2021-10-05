@@ -6,10 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const chat_controller_1 = require("../controllers/chat.controller");
 const multer_1 = __importDefault(require("multer"));
+const path_1 = __importDefault(require("path"));
 const router = express_1.Router();
 let storage = multer_1.default.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './public/products');
+        cb(null, path_1.default.join(__dirname, '../../../images/public'));
     },
     filename: (req, file, cb) => {
         cb(null, 'file-' + Date.now() + '.' + file.originalname);

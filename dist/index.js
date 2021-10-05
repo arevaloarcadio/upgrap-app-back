@@ -23,7 +23,7 @@ app.set('port', process.env.PORT || 5000);
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(cors_1.default());
-app.use('/public', express_1.default.static(path_1.default.join(__dirname, '../public')));
+app.use('/public', express_1.default.static(path_1.default.join(__dirname, '../../images/public')));
 // routers
 app.use(index_1.default);
 app.use(categories_1.default);

@@ -114,6 +114,8 @@ export const signInMobile = async (req: Request, res: Response): Promise<Respons
 
 export const signUpPhone = async (req: Request, res: Response): Promise<Response> => {
     const { phone } = req.body;
+    const validate_phone: QueryResult = await pool.query('SELECT phone FROM customer WHERE phone = $1' , [phone]);
+    if(validate_phone.rows.length != 0) return res.status(422).json({error: true,type : 'validation', data: 'Ya existe cuenta con este número de telefono'})
     const customer: QueryResult = await pool.query('INSERT INTO customer (phone,singin_method,photo) VALUES ($1,$2,$3) returning id', [phone,'phone','default.png']);
     const id_user = customer.rows[0].id
     const code = GetRandomNum(1000,9999)
@@ -126,8 +128,9 @@ export const signUpPhone = async (req: Request, res: Response): Promise<Response
         to: phone
     })
     .catch((error : any) => {
-           return res.status(400).json({error : error}); 
+        return res.status(422).json({error: true,type : 'validation', data: 'Error al enviar el código'})
     });
+
     return res.status(200).json({message : 'codigo enviado' , id_user : id_user }); 
 }
 
@@ -136,7 +139,7 @@ export const verifyCode = async (req: Request, res: Response): Promise<Response>
     try{
         const verify_code: QueryResult = await pool.query('SELECT code, expire_at FROM verify_phone WHERE id_user = $1 ORDER BY create_at DESC LIMIT 1', [id_user]);
         if(verify_code.rows[0].code != code){
-           return res.status(400).json({verify : 'Código incorrecto'}); 
+           return res.status(422).json({error: true,type : 'validation', data: 'Código de verificación incorrecto'})
         }
         const login: QueryResult = await pool.query('SELECT * FROM customer WHERE id = $1 LIMIT 1', [id_user]);
         const token = jwt.sign({id: id_user}, config.SECRET)
