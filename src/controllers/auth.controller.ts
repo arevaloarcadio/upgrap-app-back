@@ -101,9 +101,9 @@ export const signInMobile = async (req: Request, res: Response): Promise<Respons
     
     try{
         const login: QueryResult = await pool.query('SELECT * FROM customer WHERE email = $1 LIMIT 1', [lower_email]);
-        if(login.rows.length == 0) return res.status(422).json({token: null, message: 'Usuario no encontrado'});
+        if(login.rows.length == 0) return res.status(422).json({token: null, data: 'Usuario no encontrado'});
         const pass = await comparePassword(password, login.rows[0].password);
-        if(!pass) return res.status(422).json({token: null, message: 'Contraseña incorrecta'});
+        if(!pass) return res.status(422).json({token: null, data: 'Contraseña incorrecta'});
         const token = jwt.sign({id: login.rows[0].id}, config.SECRET)
         return res.json({user: login.rows[0], token});
     }catch(error){
