@@ -85,6 +85,8 @@ export const signUpMobile = async (req: Request, res: Response): Promise<Respons
         if(validate.rows.length != 0) return res.status(422).json({error: true,type : 'validation', data: 'Ya existe cuenta con ese correo'})
         const pass = await encriptPassword(password);
         const create: QueryResult = await pool.query('INSERT INTO customer (name, email, city, dir, pais, password, phone, rol, singin_method,photo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10) returning id', [name, lower_email, city, dir, pais, pass, phone, rol,singin_method,'default.png']);
+        pool.query('INSERT INTO customer_setting(show_name, show_city, show_dir, show_pais, show_phone, show_email, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [true,true,true, true,true,true, create.rows[0].id]);
+        
         return res.status(200).json({user: create.rows[0]});
     }catch(error){
         console.log(error)

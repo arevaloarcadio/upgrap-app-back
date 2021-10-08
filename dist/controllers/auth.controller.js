@@ -90,6 +90,7 @@ const signUpMobile = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             return res.status(422).json({ error: true, type: 'validation', data: 'Ya existe cuenta con ese correo' });
         const pass = yield auth_1.encriptPassword(password);
         const create = yield database_1.pool.query('INSERT INTO customer (name, email, city, dir, pais, password, phone, rol, singin_method,photo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10) returning id', [name, lower_email, city, dir, pais, pass, phone, rol, singin_method, 'default.png']);
+        database_1.pool.query('INSERT INTO customer_setting(show_name, show_city, show_dir, show_pais, show_phone, show_email, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [true, true, true, true, true, true, create.rows[0].id]);
         return res.status(200).json({ user: create.rows[0] });
     }
     catch (error) {
@@ -107,10 +108,10 @@ const signInMobile = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const login = yield database_1.pool.query('SELECT * FROM customer WHERE email = $1 LIMIT 1', [lower_email]);
         if (login.rows.length == 0)
-            return res.status(400).json({ token: null, message: 'user not found' });
+            return res.status(422).json({ token: null, data: 'Usuario no encontrado' });
         const pass = yield auth_1.comparePassword(password, login.rows[0].password);
         if (!pass)
-            return res.status(401).json({ token: null, message: 'invalid password' });
+            return res.status(422).json({ token: null, data: 'Contraseña incorrecta' });
         const token = jsonwebtoken_1.default.sign({ id: login.rows[0].id }, config_1.default.SECRET);
         return res.json({ user: login.rows[0], token });
     }

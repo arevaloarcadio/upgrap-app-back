@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {updateCustomer, getCustomerById ,updateCustomerMobile} from '../controllers/customers.controller';
+import {updateCustomer, getCustomerById ,updateCustomerMobile,getCustomerSetting} from '../controllers/customers.controller';
 import multer from 'multer';
 import path  from 'path';
 const router = Router();
@@ -16,6 +16,7 @@ let storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get('/customers/:id', getCustomerById);
+router.get('/customers/setting/:id', getCustomerSetting);
 router.put('/customers/:id/mobile', upload.single('photo') ,updateCustomerMobile);
 router.put('/customers/:id', updateCustomer);
 

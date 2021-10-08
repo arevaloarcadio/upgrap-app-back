@@ -18,6 +18,7 @@ let storage = multer_1.default.diskStorage({
 });
 const upload = multer_1.default({ storage });
 router.get('/customers/:id', customers_controller_1.getCustomerById);
+router.get('/customers/setting/:id', customers_controller_1.getCustomerSetting);
 router.put('/customers/:id/mobile', upload.single('photo'), customers_controller_1.updateCustomerMobile);
 router.put('/customers/:id', customers_controller_1.updateCustomer);
 exports.default = router;
