@@ -92,12 +92,12 @@ const createMessageChat = (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (is_file) {
             const { id_sender, id_receiver } = req.body;
             const file = (_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.filename;
-            const response = yield database_1.pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file) VALUES ($1, $2, $3,now(),false,$4)', [id_sender, id_receiver, file, is_file]);
+            const response = yield database_1.pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file,type) VALUES ($1, $2, $3,now(),false,$4,$5)', [id_sender, id_receiver, file, is_file, 'message']);
             return res.json({ message: 'Mensaje enviado' });
         }
         else {
             const { id_sender, id_receiver, message } = req.body;
-            const response = yield database_1.pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file) VALUES ($1, $2, $3,now(),false,$4)', [id_sender, id_receiver, message, is_file]);
+            const response = yield database_1.pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file,type) VALUES ($1, $2, $3,now(),false,$4,$5)', [id_sender, id_receiver, message, is_file, 'message']);
             return res.json({ message: 'Mensaje enviado' });
         }
     }

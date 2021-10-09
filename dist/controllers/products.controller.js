@@ -170,7 +170,7 @@ exports.getProductsById = getProductsById;
 // post 
 const createProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
-    const { address, category_id, to_change, city, descripcion, estado, user_id, nombre, country } = req.body;
+    const { address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, show_direction } = req.body;
     try {
         /*  jimp.read('./uploads/'+req?.file?.filename).then(info => {
             info.resize(512, jimp.AUTO,jimp.RESIZE_BEZIER)
@@ -180,12 +180,12 @@ const createProducts = (req, res) => __awaiter(void 0, void 0, void 0, function*
         .catch(err => {
             res.status(500).json({message : 'Error Interno', error : err})
         })*/
-        const response = yield database_1.pool.query('INSERT INTO products (address, category, change, city, description, estado, fecha, id_user, name, pais,photo) VALUES($1, $2, $3, $4,$5, $6, now(), $7,$8,$9,$10)', [address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, (_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.filename]);
+        const response = yield database_1.pool.query('INSERT INTO products (address, category, change, city, description, estado, fecha, id_user, name, pais,photo,show_direction) VALUES($1, $2, $3, $4,$5, $6, now(), $7,$8,$9,$10,$11)', [address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, (_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.filename, show_direction]);
         return res.status(200).json({
             message: 'User created Successfully',
             body: {
                 product: {
-                    address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, file: (_b = req === null || req === void 0 ? void 0 : req.file) === null || _b === void 0 ? void 0 : _b.filename
+                    address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, file: (_b = req === null || req === void 0 ? void 0 : req.file) === null || _b === void 0 ? void 0 : _b.filename, show_direction
                 }
             }
         });
@@ -242,14 +242,14 @@ const createProductsSavePosts = (req, res) => __awaiter(void 0, void 0, void 0, 
 exports.createProductsSavePosts = createProductsSavePosts;
 const updateProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = parseInt(req.params.id);
-    const { address, category_id, to_change, city, descripcion, estado, user_id, nombre, country } = req.body;
+    const { address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, show_direction } = req.body;
     try {
         if (req.file !== undefined) {
             const filename = req.file.filename;
-            const response = yield database_1.pool.query('UPDATE products SET address=$1, category=$2, change=$3, city=$4, description=$5, estado=$6, id_user=$7, name=$8, pais=$9, photo=$10 WHERE id = $11;', [address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, filename, id]);
+            const response = yield database_1.pool.query('UPDATE products SET address=$1, category=$2, change=$3, city=$4, description=$5, estado=$6, id_user=$7, name=$8, pais=$9, photo=$10 ,show_direction=$11 WHERE id = $12;', [address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, filename, show_direction, id]);
         }
         else {
-            const response = yield database_1.pool.query('UPDATE products SET address=$1, category=$2, change=$3, city=$4, description=$5, estado=$6, id_user=$7, name=$8, pais=$9 WHERE id = $10;', [address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, id]);
+            const response = yield database_1.pool.query('UPDATE products SET address=$1, category=$2, change=$3, city=$4, description=$5, estado=$6, id_user=$7, name=$8, pais=$9,show_direction=$10 WHERE id = $11;', [address, category_id, to_change, city, descripcion, estado, user_id, nombre, country, show_direction, id]);
         }
         return res.json(`Categoria ${id} Updated`);
     }

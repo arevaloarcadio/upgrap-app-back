@@ -82,11 +82,11 @@ export const createMessageChat = async (req: Request, res: Response): Promise<Re
         if(is_file){
             const {id_sender,id_receiver} = req.body;
             const file = req?.file?.filename 
-            const response: QueryResult = await pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file) VALUES ($1, $2, $3,now(),false,$4)',[id_sender,id_receiver,file,is_file]);
+            const response: QueryResult = await pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file,type) VALUES ($1, $2, $3,now(),false,$4,$5)',[id_sender,id_receiver,file,is_file,'message']);
             return res.json({message: 'Mensaje enviado'})  
         }else{
             const {id_sender,id_receiver,message} = req.body;
-            const response: QueryResult = await pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file) VALUES ($1, $2, $3,now(),false,$4)',[id_sender,id_receiver,message,is_file]);
+            const response: QueryResult = await pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file,type) VALUES ($1, $2, $3,now(),false,$4,$5)',[id_sender,id_receiver,message,is_file,'message']);
             return res.json({message: 'Mensaje enviado'})
         }
     }catch(error) {
