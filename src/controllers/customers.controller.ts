@@ -59,9 +59,9 @@ export const updateCustomerMobile = async (req: Request, res: Response): Promise
         const customer_setting : QueryResult = await pool.query('SELECT id FROM customer_setting WHERE user_id = $1', [id]);
        
         if (customer_setting.rows.length == 0){
-            pool.query('INSERT INTO customer_setting(show_name, show_city, show_dir, show_pais, show_phone, show_email, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [checked.show_name, checked.show_city, checked.show_dir, checked.show_pais, checked.show_phone, checked.show_email, id]);
+            pool.query('INSERT INTO customer_setting(show_name, show_city, show_dir, show_pais, show_phone, show_email, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [checked.show_name ?? false, checked.show_city ?? false, checked.show_dir ?? false, checked.show_pais ?? false, checked.show_phone ?? false, checked.show_email ?? false, id]);
         }else{
-            pool.query('UPDATE customer_setting SET show_name=$1, show_city=$2, show_dir=$3, show_pais=$4, show_phone=$5,  show_email=$6 WHERE user_id = $7;', [checked.show_name, checked.show_city, checked.show_dir, checked.show_pais, checked.show_phone, checked.show_email, id]);
+            pool.query('UPDATE customer_setting SET show_name=$1, show_city=$2, show_dir=$3, show_pais=$4, show_phone=$5,  show_email=$6 WHERE user_id = $7;', [checked.show_name ?? false, checked.show_city ?? false, checked.show_dir ?? false, checked.show_pais ?? false, checked.show_phone ?? false, checked.show_email ?? false, id]);
         }
 
         const response: QueryResult = await pool.query('SELECT name, email, city, dir, pais, phone, validate_phone, migrate_key, prefix, userid, singin_method, rol,photo ,id FROM customer WHERE id = $1', [id]);

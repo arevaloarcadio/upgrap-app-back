@@ -19,7 +19,7 @@ let storage = multer_1.default.diskStorage({
 });
 const upload = multer_1.default({ storage });
 router.get('/products/user/:user_id', middlewares_1.verifyToken, products_controller_js_1.getProductsByUser);
-router.get('/products/category/:category_id', middlewares_1.verifyToken, products_controller_js_1.getProductsByCategory);
+router.get('/products/category/:category_id', products_controller_js_1.getProductsByCategory);
 router.get('/products/saved/:user_id', middlewares_1.verifyToken, products_controller_js_1.getProductsSaved);
 router.get('/products/saved/:user_id/:product_id', middlewares_1.verifyToken, products_controller_js_1.getProductsSavedById);
 router.get('/products/count', products_controller_js_1.getCountProducts);
