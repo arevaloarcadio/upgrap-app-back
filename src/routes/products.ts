@@ -18,7 +18,7 @@ let storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get('/products/user/:user_id',verifyToken, getProductsByUser);
-router.get('/products/category/:category_id',verifyToken, getProductsByCategory);
+router.get('/products/category/:category_id', getProductsByCategory);
 router.get('/products/saved/:user_id',verifyToken, getProductsSaved);
 router.get('/products/saved/:user_id/:product_id',verifyToken, getProductsSavedById);
 router.get('/products/count', getCountProducts);
