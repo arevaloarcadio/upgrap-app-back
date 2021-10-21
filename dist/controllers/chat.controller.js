@@ -21,6 +21,7 @@ function compare(a, b) {
     return 0;
 }
 const getChats = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         const user_id = parseInt(req.params.user_id);
         const chats = yield database_1.pool.query("SELECT * FROM (" +
@@ -36,7 +37,7 @@ const getChats = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         for (var i = 0; i < chats.rows.length; i++) {
             const last_message = yield database_1.pool.query('SELECT * FROM messages WHERE (id_sender = $1 AND id_receiver = $2) OR (id_sender = $2 AND id_receiver = $1) ORDER BY fecha DESC LIMIT 1', [user_id, chats.rows[i].id_customer]);
             const customer = yield database_1.pool.query('SELECT name, email, city, dir, pais, phone, validate_phone, migrate_key, prefix, userid, singin_method, rol, id FROM customer WHERE id = $1 LIMIT 1', [chats.rows[i].id_customer]);
-            response.push(Object.assign(Object.assign({}, chats.rows[i]), { last_message: last_message.rows[0], customer: customer.rows[0] }));
+            response.push(Object.assign(Object.assign({}, chats.rows[i]), { last_message: (_a = last_message.rows[0]) !== null && _a !== void 0 ? _a : '', customer: customer.rows[0] }));
         }
         return res.status(200).json(response.sort(compare));
     }
@@ -87,12 +88,12 @@ const getChatMessages = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.getChatMessages = getChatMessages;
 const createMessageChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _b;
     const { is_file } = req.body;
     try {
         if (is_file) {
             const { id_sender, id_receiver, id_request } = req.body;
-            const file = (_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.filename;
+            const file = (_b = req === null || req === void 0 ? void 0 : req.file) === null || _b === void 0 ? void 0 : _b.filename;
             const response = yield database_1.pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file,type,id_request) VALUES ($1, $2, $3,now(),false,$4,$5,$6)', [id_sender, id_receiver, file, is_file, 'message', id_request]);
             return res.json({ message: 'Mensaje enviado' });
         }
