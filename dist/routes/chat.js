@@ -19,8 +19,8 @@ let storage = multer_1.default.diskStorage({
 const upload = multer_1.default({ storage });
 router.get('/chat/config/:user_id', chat_controller_1.getConfigChat);
 router.get('/chat/terms/:user_id', chat_controller_1.getTermsChatAcceptedByUser);
-router.get('/chat/:user_id/:customer_id', chat_controller_1.getChatMessages);
 router.get('/chat/status/:user_id/:customer_id', chat_controller_1.getChatStatus);
+router.get('/chat/:user_id/:customer_id/:request_id', chat_controller_1.getChatMessages);
 router.get('/chats/:user_id', chat_controller_1.getChats);
 router.post('/chat/config', chat_controller_1.createConfigChat);
 router.post('/chat/terms', chat_controller_1.createTermsChatAccepted);

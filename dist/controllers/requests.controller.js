@@ -58,7 +58,7 @@ const createRequests = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const { product_id, product_id_user, product_select_id, product_select_id_user, message } = req.body;
     try {
         const insert_request = yield database_1.pool.query('INSERT INTO requests (id_user,product_user_id, product_customer_id) VALUES ($1,$2,$3) returning id', [product_select_id_user, product_select_id, product_id]);
-        const insert_message = yield database_1.pool.query('INSERT INTO messages (id_sender, id_receiver, message, fecha, issee) VALUES ($1, $2, $3, now(), FALSE)', [product_select_id_user, product_id_user, message]);
+        const insert_message = yield database_1.pool.query('INSERT INTO messages (id_sender, id_receiver, message,id_request, fecha, issee) VALUES ($1, $2, $3,$4, now(), FALSE)', [product_select_id_user, product_id_user, message, insert_request.rows[0].id]);
         const insert_chat_list = yield database_1.pool.query('INSERT INTO chat_list_mobile(id_user, id_customer,id_request) VALUES ($1, $2, $3)', [product_select_id_user, product_id_user, insert_request.rows[0].id]);
         const request_id = insert_request.rows[0].id;
         const product = yield database_1.pool.query('SELECT photo FROM products WHERE id = $1 LIMIT 1', [product_select_id]);

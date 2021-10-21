@@ -68,7 +68,8 @@ export const getChatMessages = async (req: Request, res: Response): Promise<Resp
     try {
         const user_id = parseInt(req.params.user_id);
         const customer_id = parseInt(req.params.customer_id);
-        const response: QueryResult = await pool.query('SELECT * FROM messages WHERE (id_sender = $1 AND id_receiver = $2) OR (id_sender = $2 AND id_receiver = $1) ORDER BY fecha ASC',[user_id,customer_id]);
+        const request_id = parseInt(req.params.request_id);
+        const response: QueryResult = await pool.query('SELECT * FROM messages WHERE (id_sender = $1 AND id_receiver = $2) OR (id_sender = $2 AND id_receiver = $1) and id_request = $3 ORDER BY fecha ASC',[user_id,customer_id,request_id]);
         return res.status(200).json(response.rows);
     } catch (error) {
         console.log(error)
@@ -80,13 +81,13 @@ export const createMessageChat = async (req: Request, res: Response): Promise<Re
     const {is_file} = req.body;
     try {
         if(is_file){
-            const {id_sender,id_receiver} = req.body;
+            const {id_sender,id_receiver,id_request} = req.body;
             const file = req?.file?.filename 
-            const response: QueryResult = await pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file,type) VALUES ($1, $2, $3,now(),false,$4,$5)',[id_sender,id_receiver,file,is_file,'message']);
+            const response: QueryResult = await pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file,type,id_request) VALUES ($1, $2, $3,now(),false,$4,$5,$6)',[id_sender,id_receiver,file,is_file,'message',id_request]);
             return res.json({message: 'Mensaje enviado'})  
         }else{
-            const {id_sender,id_receiver,message} = req.body;
-            const response: QueryResult = await pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file,type) VALUES ($1, $2, $3,now(),false,$4,$5)',[id_sender,id_receiver,message,is_file,'message']);
+            const {id_sender,id_receiver,message,id_request} = req.body;
+            const response: QueryResult = await pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee,is_file,type,id_request) VALUES ($1, $2, $3,now(),false,$4,$5,$6)',[id_sender,id_receiver,message,is_file,'message',id_request]);
             return res.json({message: 'Mensaje enviado'})
         }
     }catch(error) {
@@ -150,6 +151,8 @@ export const getChatStatus = async (req: Request, res: Response): Promise<Respon
         const user_id = parseInt(req.params.user_id);
         const customer_id = parseInt(req.params.customer_id);
         const response: QueryResult = await pool.query('SELECT product_accepted_rejeted FROM chat_list_mobile WHERE id_user = $1 and id_customer = $2',[user_id,customer_id]);
+        console.log(response.rows[0])
+        
         return res.status(200).json(response.rows[0]);
     } catch (error) {
         console.log(error)

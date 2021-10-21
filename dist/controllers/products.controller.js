@@ -100,7 +100,7 @@ exports.getProductsInvite = getProductsInvite;
 const getProductsFilter = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { filter } = req.body;
-        const products = yield database_1.pool.query("SELECT products.*, categories.name as category_name FROM products INNER JOIN categories ON categories.id = products.category WHERE (products.name like $1 OR categories.name like $1)", ['%' + filter + '%']);
+        const products = yield database_1.pool.query("SELECT products.*, categories.name as category_name FROM products INNER JOIN categories ON categories.id = products.category WHERE ( lower(products.name) like $1 OR lower(categories.name) like $1)", ['%' + filter.toLocaleLowerCase() + '%']);
         let response = [];
         for (var i = 0; i < products.rows.length; i++) {
             const requests = yield database_1.pool.query('SELECT count(*) as requests FROM requests WHERE product_customer_id = $1;', [products.rows[i].id]);

@@ -17,8 +17,8 @@ const upload = multer({ storage });
 
 router.get('/chat/config/:user_id', getConfigChat);
 router.get('/chat/terms/:user_id', getTermsChatAcceptedByUser);
-router.get('/chat/:user_id/:customer_id', getChatMessages);
 router.get('/chat/status/:user_id/:customer_id', getChatStatus);
+router.get('/chat/:user_id/:customer_id/:request_id', getChatMessages);
 router.get('/chats/:user_id', getChats);
 router.post('/chat/config', createConfigChat);
 router.post('/chat/terms', createTermsChatAccepted);

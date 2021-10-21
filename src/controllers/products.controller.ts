@@ -103,7 +103,7 @@ export const getProductsFilter = async (req: Request, res: Response): Promise<Re
     try {
         const { filter } = req.body
         
-        const products: QueryResult = await pool.query("SELECT products.*, categories.name as category_name FROM products INNER JOIN categories ON categories.id = products.category WHERE (products.name like $1 OR categories.name like $1)",['%'+filter+'%']);
+        const products: QueryResult = await pool.query("SELECT products.*, categories.name as category_name FROM products INNER JOIN categories ON categories.id = products.category WHERE ( lower(products.name) like $1 OR lower(categories.name) like $1)",['%'+filter.toLocaleLowerCase()+'%']);
         let response:any[]= []
         
         for(var i = 0; i < products.rows.length; i++){
