@@ -32,7 +32,8 @@ export const getChats = async (req: Request, res: Response): Promise<Response> =
         for(var i = 0; i < chats.rows.length; i++){
             const last_message: QueryResult = await pool.query('SELECT * FROM messages WHERE WHERE ((id_sender = $1 AND id_receiver = $2) OR (id_sender = $2 AND id_receiver = $1)) and id_request = $3 ORDER BY fecha DESC LIMIT 1',[user_id,chats.rows[i].id_customer]);
             const customer : QueryResult = await pool.query('SELECT name, email, city, dir, pais, phone, validate_phone, migrate_key, prefix, userid, singin_method, rol, id FROM customer WHERE id = $1 LIMIT 1',[chats.rows[i].id_customer]);
-            response.push({... chats.rows[i],last_message : last_message.rows[0] ?? '',customer :customer.rows[0]})
+            if()
+            response.push({... chats.rows[i],last_message : last_message.rows.length != 0 ? last_message.rows[0] : '' ,customer :customer.rows[0]})
         }
         return res.status(200).json(response.sort(compare));
     } catch (error) {
