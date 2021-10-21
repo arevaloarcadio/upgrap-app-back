@@ -77,7 +77,7 @@ const getChatMessages = (req, res) => __awaiter(void 0, void 0, void 0, function
         const user_id = parseInt(req.params.user_id);
         const customer_id = parseInt(req.params.customer_id);
         const request_id = parseInt(req.params.request_id);
-        const response = yield database_1.pool.query('SELECT * FROM messages WHERE (id_sender = $1 AND id_receiver = $2) OR (id_sender = $2 AND id_receiver = $1) and id_request = $3 ORDER BY fecha ASC', [user_id, customer_id, request_id]);
+        const response = yield database_1.pool.query('SELECT * FROM messages WHERE ((id_sender = $1 AND id_receiver = $2) OR (id_sender = $2 AND id_receiver = $1) and id_request = $3) ORDER BY fecha ASC', [user_id, customer_id, request_id]);
         return res.status(200).json(response.rows);
     }
     catch (error) {
