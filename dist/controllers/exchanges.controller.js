@@ -61,10 +61,10 @@ const updateExchange = (req, res) => __awaiter(void 0, void 0, void 0, function*
         let messages;
         if (status == 'Aceptada') {
             yield database_1.pool.query('INSERT INTO exchanges(customer_id, product_id, status) VALUES ( $1, $2, $3)', [user_id, request.product_user_id, status]);
-            messages = yield database_1.pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee, is_file, type)VALUES ($1, $2, $3, now(), false, false, $4) returning id,id_sender, id_receiver, message, fecha, issee, is_file, type', [user_id, request.id_user, 'Ha aceptado el cambio', 'accepted']);
+            messages = yield database_1.pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee, is_file, type,id_request)VALUES ($1, $2, $3, now(), false, false, $4,$5) returning id,id_sender, id_receiver, message, fecha, issee, is_file, type,id_request', [user_id, request.id_user, 'Ha aceptado el cambio', 'accepted', request_id]);
         }
         else {
-            messages = yield database_1.pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee, is_file, type)VALUES ($1, $2, $3, now(), false, false, $4) returning id,id_sender, id_receiver, message, fecha, issee, is_file, type', [user_id, request.id_user, 'Ha rechazado el cambio', 'rejeted']);
+            messages = yield database_1.pool.query('INSERT INTO messages(id_sender, id_receiver, message, fecha, issee, is_file, type,id_request)VALUES ($1, $2, $3, now(), false, false, $4,$5) returning id,id_sender, id_receiver, message, fecha, issee, is_file, type,id_request', [user_id, request.id_user, 'Ha rechazado el cambio', 'rejeted', request_id]);
         }
         const update = yield database_1.pool.query('UPDATE chat_list_mobile SET product_accepted_rejeted = true WHERE id_request = $1', [request_id]);
         const product = yield database_1.pool.query('SELECT photo FROM products WHERE id = $1 LIMIT 1', [request.product_customer_id]);
