@@ -102,7 +102,7 @@ export const signInMobile = async (req: Request, res: Response): Promise<Respons
     let lower_email : string = email.toLocaleLowerCase()
     
     try{
-        const login: QueryResult = await pool.query('SELECT * FROM customer WHERE email = $1 LIMIT 1', [lower_email]);
+        const login: QueryResult = await pool.query('SELECT * FROM customer WHERE lower(email) = $1 LIMIT 1', [lower_email]);
         if(login.rows.length == 0) return res.status(422).json({token: null, data: 'Usuario no encontrado'});
         const pass = await comparePassword(password, login.rows[0].password);
         if(!pass) return res.status(422).json({token: null, data: 'Contraseña incorrecta'});
