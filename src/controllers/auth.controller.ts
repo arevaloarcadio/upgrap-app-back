@@ -81,7 +81,7 @@ export const signUpMobile = async (req: Request, res: Response): Promise<Respons
     const {name, email, city, dir, pais, password, phone, rol, singin_method} = req.body;
     let lower_email : string = email.toLocaleLowerCase()
     try{
-         const validate: QueryResult = await pool.query('SELECT * FROM customer WHERE email = $1 LIMIT 1', [lower_email]);
+         const validate: QueryResult = await pool.query('SELECT * FROM customer WHERE trim(lower(email)) = trim($1) LIMIT 1', [lower_email]);
         if(validate.rows.length != 0) return res.status(422).json({error: true,type : 'validation', data: 'Ya existe cuenta con ese correo'})
         const pass = await encriptPassword(password);
         const create: QueryResult = await pool.query('INSERT INTO customer (name, email, city, dir, pais, password, phone, rol, singin_method,photo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10) returning id', [name, lower_email, city, dir, pais, pass, phone, rol,singin_method,'default.png']);
@@ -102,7 +102,7 @@ export const signInMobile = async (req: Request, res: Response): Promise<Respons
     let lower_email : string = email.toLocaleLowerCase()
     
     try{
-        const login: QueryResult = await pool.query('SELECT * FROM customer WHERE lower(email) = $1 LIMIT 1', [lower_email]);
+        const login: QueryResult = await pool.query('SELECT * FROM customer WHERE trim(lower(email)) = trim($1) LIMIT 1', [lower_email]);
         if(login.rows.length == 0) return res.status(422).json({token: null, data: 'Usuario no encontrado'});
         const pass = await comparePassword(password, login.rows[0].password);
         if(!pass) return res.status(422).json({token: null, data: 'Contraseña incorrecta'});
