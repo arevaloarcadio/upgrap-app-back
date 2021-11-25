@@ -116,12 +116,23 @@ export const signInMobile = async (req: Request, res: Response): Promise<Respons
 
 export const signUpPhone = async (req: Request, res: Response): Promise<Response> => {
     const { phone } = req.body;
-    const validate_phone: QueryResult = await pool.query('SELECT phone FROM customer WHERE phone = $1' , [phone]);
-    if(validate_phone.rows.length != 0) return res.status(422).json({error: true,type : 'validation', data: 'Ya existe cuenta con este número de telefono'})
-    const customer: QueryResult = await pool.query('INSERT INTO customer (phone,singin_method,photo) VALUES ($1,$2,$3) returning id', [phone,'phone','default.png']);
-    const id_user = customer.rows[0].id
-    const code = GetRandomNum(1000,9999)
-    const verify_phone: QueryResult = await pool.query('INSERT INTO verify_phone(code, id_user,create_at,expire_at)VALUES ($1, $2, now(), now())', [code,id_user]);
+    const validate_phone: QueryResult = await pool.query('SELECT id,phone,validate_phone FROM customer WHERE phone = $1' , [phone]);
+    let code;
+    let id_user;
+
+    if(validate_phone.rows.length != 0) {
+        if(validate_phone.rows[0].validate_phone){
+            return res.status(422).json({error: true,type : 'validation', data: 'Ya existe cuenta con este número de telefono'})
+        }
+        id_user = validate_phone.rows[0].id
+        code = GetRandomNum(1000,9999)
+        const verify_phone: QueryResult = await pool.query('INSERT INTO verify_phone(code, id_user,create_at,expire_at)VALUES ($1, $2, now(), now())', [code,id_user]);
+    }else{
+        const customer: QueryResult = await pool.query('INSERT INTO customer (phone,singin_method,photo) VALUES ($1,$2,$3) returning id', [phone,'phone','default.png']);
+        id_user = customer.rows[0].id
+        code = GetRandomNum(1000,9999)
+        const verify_phone: QueryResult = await pool.query('INSERT INTO verify_phone(code, id_user,create_at,expire_at)VALUES ($1, $2, now(), now())', [code,id_user]);
+    }
 
     client.messages
     .create({
@@ -143,8 +154,11 @@ export const verifyCode = async (req: Request, res: Response): Promise<Response>
         if(verify_code.rows[0].code != code){
            return res.status(422).json({error: true,type : 'validation', data: 'Código de verificación incorrecto'})
         }
+
         const login: QueryResult = await pool.query('SELECT * FROM customer WHERE id = $1 LIMIT 1', [id_user]);
+        await pool.query('UPDATE customer SET validate_phone = true WHERE id = $1 ',[id_user]);
         const token = jwt.sign({id: id_user}, config.SECRET)
+
         return res.status(200).json({user: login.rows[0], token});
     }catch(error){
         console.log(error)

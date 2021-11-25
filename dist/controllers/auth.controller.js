@@ -85,7 +85,7 @@ const signUpMobile = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     const { name, email, city, dir, pais, password, phone, rol, singin_method } = req.body;
     let lower_email = email.toLocaleLowerCase();
     try {
-        const validate = yield database_1.pool.query('SELECT * FROM customer WHERE email = $1 LIMIT 1', [lower_email]);
+        const validate = yield database_1.pool.query('SELECT * FROM customer WHERE trim(lower(email)) = trim($1) LIMIT 1', [lower_email]);
         if (validate.rows.length != 0)
             return res.status(422).json({ error: true, type: 'validation', data: 'Ya existe cuenta con ese correo' });
         const pass = yield auth_1.encriptPassword(password);
@@ -106,7 +106,7 @@ const signInMobile = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     const { email, password } = req.body;
     let lower_email = email.toLocaleLowerCase();
     try {
-        const login = yield database_1.pool.query('SELECT * FROM customer WHERE email = $1 LIMIT 1', [lower_email]);
+        const login = yield database_1.pool.query('SELECT * FROM customer WHERE trim(lower(email)) = trim($1) LIMIT 1', [lower_email]);
         if (login.rows.length == 0)
             return res.status(422).json({ token: null, data: 'Usuario no encontrado' });
         const pass = yield auth_1.comparePassword(password, login.rows[0].password);
@@ -123,13 +123,23 @@ const signInMobile = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.signInMobile = signInMobile;
 const signUpPhone = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { phone } = req.body;
-    const validate_phone = yield database_1.pool.query('SELECT phone FROM customer WHERE phone = $1', [phone]);
-    if (validate_phone.rows.length != 0)
-        return res.status(422).json({ error: true, type: 'validation', data: 'Ya existe cuenta con este número de telefono' });
-    const customer = yield database_1.pool.query('INSERT INTO customer (phone,singin_method,photo) VALUES ($1,$2,$3) returning id', [phone, 'phone', 'default.png']);
-    const id_user = customer.rows[0].id;
-    const code = GetRandomNum(1000, 9999);
-    const verify_phone = yield database_1.pool.query('INSERT INTO verify_phone(code, id_user,create_at,expire_at)VALUES ($1, $2, now(), now())', [code, id_user]);
+    const validate_phone = yield database_1.pool.query('SELECT id,phone,validate_phone FROM customer WHERE phone = $1', [phone]);
+    let code;
+    let id_user;
+    if (validate_phone.rows.length != 0) {
+        if (validate_phone.rows[0].validate_phone) {
+            return res.status(422).json({ error: true, type: 'validation', data: 'Ya existe cuenta con este número de telefono' });
+        }
+        id_user = validate_phone.rows[0].id;
+        code = GetRandomNum(1000, 9999);
+        const verify_phone = yield database_1.pool.query('INSERT INTO verify_phone(code, id_user,create_at,expire_at)VALUES ($1, $2, now(), now())', [code, id_user]);
+    }
+    else {
+        const customer = yield database_1.pool.query('INSERT INTO customer (phone,singin_method,photo) VALUES ($1,$2,$3) returning id', [phone, 'phone', 'default.png']);
+        id_user = customer.rows[0].id;
+        code = GetRandomNum(1000, 9999);
+        const verify_phone = yield database_1.pool.query('INSERT INTO verify_phone(code, id_user,create_at,expire_at)VALUES ($1, $2, now(), now())', [code, id_user]);
+    }
     client.messages
         .create({
         body: 'UPGRAP: El código para verificación es: ' + code,
@@ -150,6 +160,7 @@ const verifyCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return res.status(422).json({ error: true, type: 'validation', data: 'Código de verificación incorrecto' });
         }
         const login = yield database_1.pool.query('SELECT * FROM customer WHERE id = $1 LIMIT 1', [id_user]);
+        yield database_1.pool.query('UPDATE customer SET validate_phone = true WHERE id = $1 ', [id_user]);
         const token = jsonwebtoken_1.default.sign({ id: id_user }, config_1.default.SECRET);
         return res.status(200).json({ user: login.rows[0], token });
     }
